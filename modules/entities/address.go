@@ -8,6 +8,7 @@ type Address struct {
 	LastName      string
 	Phone         string
 	Province      string
+	Other         string
 	District      string
 	SubDistrict   string
 	PostalCode    int

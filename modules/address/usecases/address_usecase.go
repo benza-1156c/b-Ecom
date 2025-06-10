@@ -46,6 +46,7 @@ func (u *addressUsecase) Create(userID uint, data reqaddress.Reqaddress) (*entit
 		Phone:         data.Phone,
 		Province:      data.Province,
 		District:      data.District,
+		Other:         data.Other,
 		SubDistrict:   data.SubDistrict,
 		PostalCode:    data.PostalCode,
 		IsDefault:     data.IsDefault,

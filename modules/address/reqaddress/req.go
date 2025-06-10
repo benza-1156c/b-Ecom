@@ -8,6 +8,7 @@ type Reqaddress struct {
 	Province      string `json:"province"`
 	District      string `json:"district"`
 	SubDistrict   string `json:"subDistrict"`
+	Other         string `json:"other"`
 	PostalCode    int    `json:"postalCode"`
 	IsDefault     bool   `json:"isDefault"`
 }
