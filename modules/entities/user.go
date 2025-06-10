@@ -11,6 +11,7 @@ type User struct {
 	Status    string
 	CreatedAt time.Time
 
-	Orders []Order `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	Cart   Cart    `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	Orders  []Order   `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	Cart    Cart      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	Address []Address `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 }

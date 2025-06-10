@@ -3,7 +3,6 @@ package usecases
 import (
 	"e-com/modules/cart/repositories"
 	"e-com/modules/cart/reqcart"
-	"e-com/modules/entities"
 )
 
 type CartUsecase interface {
@@ -19,14 +18,13 @@ func NewCartUsecase(repo repositories.CartRepository) CartUsecase {
 }
 
 func (u *cartUsecase) Create(userid uint, data reqcart.ReqCart) error {
-	cart := &entities.Cart{
-		UserID:    userid,
-		ProductID: data.ProductID,
-		Quantity:  data.Quantity,
-	}
+	// cart := &entities.CartItem{
+	// 	ProductID: data.ProductID,
+	// 	Quantity:  data.Quantity,
+	// }
 
-	if err := u.repo.Create(cart); err != nil {
-		return err
-	}
+	// if err := u.repo.Create(cart); err != nil {
+	// 	return err
+	// }
 	return nil
 }

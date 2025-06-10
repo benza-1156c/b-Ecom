@@ -34,6 +34,7 @@ func ConnentDB() *gorm.DB {
 func AutoMigrate(db *gorm.DB) {
 	db.AutoMigrate(
 		&entities.User{},
+		&entities.Address{},
 		&entities.Product{},
 		&entities.Image{},
 		&entities.Category{},

@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 
+	"e-com/modules/address"
 	authcontroller "e-com/modules/auth/controllers"
 	authrepo "e-com/modules/auth/repositories"
 	authusecase "e-com/modules/auth/usecases"
@@ -103,6 +104,12 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 
 	api.Get("@me", middlewares.AuthCheck, usercontroller.Me)
 	api.Get("refresh-token", middlewares.Refresh_Token, usercontroller.Refresh_Token)
+
+	// Address
+	AddressModule := address.NewAddressModule(db)
+	api.Post("/addresses", middlewares.AuthCheck, AddressModule.Controllers.Create)
+	api.Get("/addresses", middlewares.AuthCheck, AddressModule.Controllers.FindAll)
+	// Address
 
 	// Product
 	productModule := product.New(db)
