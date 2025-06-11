@@ -8,9 +8,14 @@ type Address struct {
 	LastName      string
 	Phone         string
 	Province      string
+	Address       string
 	Other         string
 	District      string
 	SubDistrict   string
 	PostalCode    int
-	IsDefault     bool
+
+	ProvinceId int
+	AmphureId  int
+	TambonId   int
+	IsDefault  bool
 }

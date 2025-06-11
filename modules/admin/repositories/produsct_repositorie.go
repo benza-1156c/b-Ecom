@@ -61,14 +61,15 @@ func (r *productRepository) FindByReq(filter, search string, page, limit, catego
 	if price > 0 {
 		switch price {
 		case 1:
-			query = query.Where("price < ?", 1000)
+			query = query.Where("price < ?", 10000)
 		case 2:
-			query = query.Where("price >= ? AND price < ?", 1000, 5000)
+			query = query.Where("price >= ? AND price < ?", 10000, 25000)
 		case 3:
-			query = query.Where("price >= ?", 5000)
+			query = query.Where("price >= ? AND price < ?", 25000, 50000)
+		case 4:
+			query = query.Where("price >= ?", 50000)
 		}
 	}
-
 	switch filter {
 	case "name":
 		query = query.Order("name ASC")

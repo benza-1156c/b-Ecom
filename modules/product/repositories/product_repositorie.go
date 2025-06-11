@@ -7,7 +7,7 @@ import (
 )
 
 type ProductRepository interface {
-	FindAll(search string, page, limit, categoryID, brandID, price int) ([]entities.Product, int64, error)
+	FindAll(search string, page, limit, categoryID, brandID, minPrice, maxPrice int) ([]entities.Product, int64, error)
 }
 
 type productRepository struct {
@@ -18,7 +18,7 @@ func NewProductRepository(db *gorm.DB) ProductRepository {
 	return &productRepository{db}
 }
 
-func (r *productRepository) FindAll(search string, page, limit, categoryID, brandID, price int) ([]entities.Product, int64, error) {
+func (r *productRepository) FindAll(search string, page, limit, categoryID, brandID, minPrice, maxPrice int) ([]entities.Product, int64, error) {
 	var products []entities.Product
 	var total int64
 	query := r.db.Model(&entities.Product{}).Preload("Images").Preload("Categories").Preload("Brand")
@@ -35,15 +35,11 @@ func (r *productRepository) FindAll(search string, page, limit, categoryID, bran
 		query = query.Where("brand_id = ?", brandID)
 	}
 
-	if price > 0 {
-		switch price {
-		case 1:
-			query = query.Where("price < ?", 1000)
-		case 2:
-			query = query.Where("price >= ? AND price < ?", 1000, 5000)
-		case 3:
-			query = query.Where("price >= ?", 5000)
-		}
+	if minPrice > 0 {
+		query = query.Where("price >= ?", minPrice)
+	}
+	if maxPrice > 0 {
+		query = query.Where("price <= ?", maxPrice)
 	}
 
 	if err := query.Count(&total).Error; err != nil {

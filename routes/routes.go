@@ -107,8 +107,10 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 
 	// Address
 	AddressModule := address.NewAddressModule(db)
-	api.Post("/addresses", middlewares.AuthCheck, AddressModule.Controllers.Create)
 	api.Get("/addresses", middlewares.AuthCheck, AddressModule.Controllers.FindAll)
+	api.Post("/addresses", middlewares.AuthCheck, AddressModule.Controllers.Create)
+	api.Put("/addresses/:id", middlewares.AuthCheck, AddressModule.Controllers.Update)
+	api.Delete("/addresses/:id", middlewares.AuthCheck, AddressModule.Controllers.Delete)
 	// Address
 
 	// Product
