@@ -11,6 +11,7 @@ type CartRepository interface {
 	CreateCartItem(data *entities.CartItem) error
 	FindCartByUserId(id uint) (*entities.Cart, error)
 	FindByCartIDAndProductID(userID, productID uint) (*entities.CartItem, error)
+	FindAllCartItemByCartid(id uint) ([]entities.CartItem, error)
 	UpdateCartItem(data *entities.CartItem) error
 }
 
@@ -41,6 +42,14 @@ func (r *cartRepository) FindCartByUserId(id uint) (*entities.Cart, error) {
 func (r *cartRepository) FindByCartIDAndProductID(cartID, productID uint) (*entities.CartItem, error) {
 	cart := &entities.CartItem{}
 	if err := r.db.Where("cart_id = ? AND product_id = ?", cartID, productID).First(cart).Error; err != nil {
+		return nil, err
+	}
+	return cart, nil
+}
+
+func (r *cartRepository) FindAllCartItemByCartid(id uint) ([]entities.CartItem, error) {
+	var cart []entities.CartItem
+	if err := r.db.Preload("Product.Images").Where("cart_id = ?", id).Find(&cart).Error; err != nil {
 		return nil, err
 	}
 	return cart, nil

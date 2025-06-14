@@ -3,6 +3,7 @@ package controllers
 import (
 	"e-com/modules/cart/reqcart"
 	"e-com/modules/cart/usecases"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -36,4 +37,29 @@ func (cc *CartController) Create(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"success": true,
 	})
+}
+
+func (cc *CartController) FindAllCartItemByCartid(c *fiber.Ctx) error {
+	userid := c.Locals("userID").(uint)
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error(),
+		})
+	}
+
+	data, err := cc.usecases.FindAllCartItemByCartid(userid, uint(id))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"success": true,
+		"data":    data,
+	})
+
 }
