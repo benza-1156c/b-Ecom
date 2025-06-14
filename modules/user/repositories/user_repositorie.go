@@ -20,7 +20,7 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 
 func (r *userRepository) FindOneById(id uint) (*entities.User, error) {
 	user := &entities.User{}
-	if err := r.db.First(user, id).Error; err != nil {
+	if err := r.db.Preload("Cart.CartItems.Product.Images").First(user, id).Error; err != nil {
 		return nil, err
 	}
 	return user, nil

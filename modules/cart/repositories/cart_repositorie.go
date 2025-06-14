@@ -7,8 +7,11 @@ import (
 )
 
 type CartRepository interface {
-	FnidUserById(id uint) (*entities.User, error)
 	Create(data *entities.Cart) error
+	CreateCartItem(data *entities.CartItem) error
+	FindCartByUserId(id uint) (*entities.Cart, error)
+	FindByCartIDAndProductID(userID, productID uint) (*entities.CartItem, error)
+	UpdateCartItem(data *entities.CartItem) error
 }
 
 type cartRepository struct {
@@ -19,14 +22,30 @@ func NewCartRepository(db *gorm.DB) CartRepository {
 	return &cartRepository{db}
 }
 
-func (r *cartRepository) FnidUserById(id uint) (*entities.User, error) {
-	user := &entities.User{}
-	if err := r.db.First(user, id).Error; err != nil {
-		return nil, err
-	}
-	return user, nil
-}
-
 func (r *cartRepository) Create(data *entities.Cart) error {
 	return r.db.Create(data).Error
+}
+
+func (r *cartRepository) CreateCartItem(data *entities.CartItem) error {
+	return r.db.Create(data).Error
+}
+
+func (r *cartRepository) FindCartByUserId(id uint) (*entities.Cart, error) {
+	cart := &entities.Cart{}
+	if err := r.db.Where("user_id = ?", id).First(cart).Error; err != nil {
+		return nil, err
+	}
+	return cart, nil
+}
+
+func (r *cartRepository) FindByCartIDAndProductID(cartID, productID uint) (*entities.CartItem, error) {
+	cart := &entities.CartItem{}
+	if err := r.db.Where("cart_id = ? AND product_id = ?", cartID, productID).First(cart).Error; err != nil {
+		return nil, err
+	}
+	return cart, nil
+}
+
+func (r *cartRepository) UpdateCartItem(data *entities.CartItem) error {
+	return r.db.Save(data).Error
 }

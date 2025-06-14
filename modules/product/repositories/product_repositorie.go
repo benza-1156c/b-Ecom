@@ -8,6 +8,9 @@ import (
 
 type ProductRepository interface {
 	FindAll(search string, page, limit, categoryID, brandID, minPrice, maxPrice int) ([]entities.Product, int64, error)
+	FindOneById(id uint) (*entities.Product, error)
+	FindAllByCategory(id, Limit uint) ([]entities.Product, error)
+	FindProductFeatured() ([]entities.Product, error)
 }
 
 type productRepository struct {
@@ -51,4 +54,34 @@ func (r *productRepository) FindAll(search string, page, limit, categoryID, bran
 		return nil, 0, err
 	}
 	return products, total, nil
+}
+
+func (r *productRepository) FindOneById(id uint) (*entities.Product, error) {
+	product := &entities.Product{}
+	if err := r.db.Preload("Images").First(product, id).Error; err != nil {
+		return nil, err
+	}
+
+	return product, nil
+}
+
+func (r *productRepository) FindAllByCategory(id, limit uint) ([]entities.Product, error) {
+	var products []entities.Product
+	if err := r.db.
+		Where("categories_id = ?", id).
+		Limit(int(limit)).
+		Preload("Images").
+		Preload("Brand").
+		Find(&products).Error; err != nil {
+		return nil, err
+	}
+	return products, nil
+}
+
+func (r *productRepository) FindProductFeatured() ([]entities.Product, error) {
+	var products []entities.Product
+	if err := r.db.Preload("Images").Preload("Categories").Preload("Brand").Where("featured = ?", true).Find(&products).Error; err != nil {
+		return nil, err
+	}
+	return products, nil
 }

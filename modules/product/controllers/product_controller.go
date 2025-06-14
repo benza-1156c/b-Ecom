@@ -41,3 +41,75 @@ func (cc *ProductController) FindAll(c *fiber.Ctx) error {
 		"currentPage": page,
 	})
 }
+
+func (cc *ProductController) FindOneById(c *fiber.Ctx) error {
+	idParams := c.Params("id")
+	id, err := strconv.Atoi(idParams)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error(),
+		})
+	}
+
+	data, err := cc.usecases.FindOneById(uint(id))
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"success": true,
+		"data":    data,
+	})
+
+}
+
+func (cc *ProductController) FindProductFeatured(c *fiber.Ctx) error {
+	data, err := cc.usecases.FindProductFeatured()
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"success": true,
+		"data":    data,
+	})
+}
+
+func (cc *ProductController) FindAllByCategory(c *fiber.Ctx) error {
+	categoryidquy := c.Query("category")
+	limitqy := c.Query("limit")
+	categoryid, err := strconv.Atoi(categoryidquy)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error(),
+		})
+	}
+	limit, err := strconv.Atoi(limitqy)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error(),
+		})
+	}
+
+	data, err := cc.usecases.FindAllByCategory(uint(categoryid), uint(limit))
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"success": true,
+		"data":    data,
+	})
+}

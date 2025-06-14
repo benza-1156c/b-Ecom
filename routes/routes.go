@@ -8,6 +8,7 @@ import (
 	authcontroller "e-com/modules/auth/controllers"
 	authrepo "e-com/modules/auth/repositories"
 	authusecase "e-com/modules/auth/usecases"
+	"e-com/modules/cart"
 	"e-com/modules/product"
 
 	useradminusercontroller "e-com/modules/admin/controllers"
@@ -116,7 +117,15 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 	// Product
 	productModule := product.New(db)
 	api.Get("/products", productModule.Controller.FindAll)
+	api.Get("/product/:id", productModule.Controller.FindOneById)
+	api.Get("/product-related", productModule.Controller.FindAllByCategory)
+	api.Get("/products-featured", productModule.Controller.FindProductFeatured)
 	// Product
+
+	// Cart
+	cart.New(app, db)
+	// Cart
+
 	// User
 
 }

@@ -25,7 +25,8 @@ func (cc *CartController) Create(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := cc.usecases.Create(userid, req); err != nil {
+	err := cc.usecases.Create(userid, req)
+	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
 			"message": err.Error(),
