@@ -9,6 +9,7 @@ import (
 	authrepo "e-com/modules/auth/repositories"
 	authusecase "e-com/modules/auth/usecases"
 	"e-com/modules/cart"
+	"e-com/modules/payment"
 	"e-com/modules/product"
 
 	useradminusercontroller "e-com/modules/admin/controllers"
@@ -124,6 +125,7 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 
 	// Cart
 	cart.New(app, db)
+	payment.NewModulePayment(app)
 	// Cart
 
 	// User
