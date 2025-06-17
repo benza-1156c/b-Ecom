@@ -63,3 +63,47 @@ func (cc *CartController) FindAllCartItemByCartid(c *fiber.Ctx) error {
 	})
 
 }
+
+func (cc *CartController) UpdateCount(c *fiber.Ctx) error {
+	userID := c.Locals("userID").(uint)
+	var req reqcart.ReqUpdateCart
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error(),
+		})
+	}
+
+	if err := cc.usecases.UpdateCount(userID, req.CartId, req.ProductId, req.Quantity); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"success": true,
+	})
+}
+
+func (cc *CartController) DeleteCartItem(c *fiber.Ctx) error {
+	userid := c.Locals("userID").(uint)
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error(),
+		})
+	}
+
+	if err := cc.usecases.DeleteCartItem(userid, uint(id)); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"success": true,
+	})
+}

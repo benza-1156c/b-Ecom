@@ -13,6 +13,8 @@ import (
 type CartUsecase interface {
 	Create(userid uint, data reqcart.ReqCart) error
 	FindAllCartItemByCartid(userid, id uint) ([]entities.CartItem, error)
+	UpdateCount(userid, CartId, productID uint, quantity int) error
+	DeleteCartItem(userid, id uint) error
 }
 
 type cartUsecase struct {
@@ -85,4 +87,44 @@ func (u *cartUsecase) FindAllCartItemByCartid(userid, id uint) ([]entities.CartI
 	}
 
 	return data, nil
+}
+
+func (u *cartUsecase) UpdateCount(userid, CartId, productID uint, quantity int) error {
+	cart, err := u.repo.FindCartByUserId(userid)
+	if err != nil {
+		return err
+	}
+
+	if cart.UserID != userid {
+		return errors.New("คุณไม่มีสิทธิ์แก้ไขสินค้านี้")
+	}
+
+	cartItem, err := u.repo.FindByCartIDAndProductID(CartId, productID)
+	if err != nil {
+		return errors.New("ไม่พบสินค้านี้ในตะกร้า")
+	}
+
+	cartItem.Quantity = quantity
+	if err := u.repo.UpdateCountCartItem(cartItem); err != nil {
+		return errors.New("error Save to DB")
+	}
+
+	return nil
+}
+
+func (u *cartUsecase) DeleteCartItem(userid, id uint) error {
+	cart, err := u.repo.FindCartItemById(id)
+	if err != nil {
+		return err
+	}
+
+	if cart.Cart.UserID != userid {
+		return errors.New("คุณไม่มีสิทธิ์แก้ไขสินค้านี้")
+	}
+
+	if err := u.repo.DeleteCartItemByID(id); err != nil {
+		return err
+	}
+
+	return nil
 }

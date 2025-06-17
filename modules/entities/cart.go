@@ -17,4 +17,5 @@ type CartItem struct {
 	Quantity  int
 
 	Product Product `gorm:"foreignKey:ProductID"`
+	Cart    Cart    `gorm:"foreignKey:CartID" json:"-"`
 }

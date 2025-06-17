@@ -21,6 +21,8 @@ func New(app *fiber.App, db *gorm.DB) {
 
 	cartGroup := app.Group("/api/cart")
 
-	cartGroup.Post("/", middlewares.AuthCheck, cartController.Create)
 	cartGroup.Get("/:id", middlewares.AuthCheck, cartController.FindAllCartItemByCartid)
+	cartGroup.Post("/", middlewares.AuthCheck, cartController.Create)
+	cartGroup.Put("/update", middlewares.AuthCheck, cartController.UpdateCount)
+	cartGroup.Delete("/remove/:id", middlewares.AuthCheck, cartController.DeleteCartItem)
 }

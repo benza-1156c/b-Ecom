@@ -10,9 +10,12 @@ type CartRepository interface {
 	Create(data *entities.Cart) error
 	CreateCartItem(data *entities.CartItem) error
 	FindCartByUserId(id uint) (*entities.Cart, error)
+	FindCartItemById(id uint) (*entities.CartItem, error)
 	FindByCartIDAndProductID(userID, productID uint) (*entities.CartItem, error)
 	FindAllCartItemByCartid(id uint) ([]entities.CartItem, error)
 	UpdateCartItem(data *entities.CartItem) error
+	UpdateCountCartItem(data *entities.CartItem) error
+	DeleteCartItemByID(id uint) error
 }
 
 type cartRepository struct {
@@ -57,4 +60,23 @@ func (r *cartRepository) FindAllCartItemByCartid(id uint) ([]entities.CartItem, 
 
 func (r *cartRepository) UpdateCartItem(data *entities.CartItem) error {
 	return r.db.Save(data).Error
+}
+
+func (r *cartRepository) UpdateCountCartItem(data *entities.CartItem) error {
+	return r.db.Model(&entities.CartItem{}).
+		Where("id = ?", data.ID).
+		Update("quantity", data.Quantity).Error
+}
+
+func (r *cartRepository) FindCartItemById(id uint) (*entities.CartItem, error) {
+	data := &entities.CartItem{}
+	if err := r.db.Preload("Cart").First(data, id).Error; err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
+func (r *cartRepository) DeleteCartItemByID(id uint) error {
+	return r.db.Delete(&entities.CartItem{}, id).Error
 }
